@@ -5,6 +5,21 @@ spring:
   application:
     name:
       ms-scheduled-status
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: <sender_mail_user>
+    password: <sender_mail_password>
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          writetimeout: 5000
+          connectiontimeout: 5000
+          starttls:
+            enable: true
+            required: true
   data:
     mongodb:
       port: <port_mongo>
