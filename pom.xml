@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.shalom</groupId>
 	<artifactId>ms-scheduled-status</artifactId>
-	<version>0.2</version>
+	<version>0.2.1</version>
 	<name>ms-scheduled-status</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
