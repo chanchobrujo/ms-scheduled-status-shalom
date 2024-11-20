@@ -8,6 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import static java.time.LocalDateTime.now;
+import static java.util.Optional.ofNullable;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -18,35 +21,37 @@ public class ScheduledStatusTask {
 
     @Scheduled(cron = "${application.scheduledTimer}")
     public void reportCurrentTime() {
-        var list = this.shipStatusRepository.findByComplete(false);
-        list.parallelStream()
+        log.info("VERIFICAR PEDIDOS PENDIENTES. ".concat(now().minusHours(5).toString()));
+        this.shipStatusRepository
+                .findByComplete(false)
+                .parallelStream()
                 .forEach(shipStatusCurrentSaved -> {
                     var shipStatusResponse = this.shipShalomRest.getPackage(shipStatusCurrentSaved.toRequest());
-                    var trackingNumber = shipStatusCurrentSaved.getTrackingNumber();
 
-                    var name = shipStatusResponse.getDestinatario().get("nombre");
-                    var subject = "PEDIDO ".concat(trackingNumber);
+                    String emailText = null;
+                    String customerEmail = "primapp6@gmail.com";
+                    String customerName = shipStatusResponse.getDestinatario().get("nombre");
+                    String emailSubject = "PEDIDO ".concat(shipStatusCurrentSaved.getTrackingNumber());
 
-                    var trackings = shipStatusResponse.getTracking();
                     if (shipStatusResponse.getCompleto()) {
-                        var text = "Hola,"+name+" tu pedido ya se encuentra en el local de entrega.";
-
-                        this.senderMessageService.sendMessage(text, subject, "primapp6@gmail.com");
+                        emailText = "Hola, ".concat(customerName).concat(" tu pedido ya se encuentra en el local de entrega.");
                         shipStatusCurrentSaved.setComplete(true);
                         this.shipStatusRepository.save(shipStatusCurrentSaved);
                     }
+
+                    var trackings = shipStatusResponse.getTracking();
                     if (!trackings.isEmpty()) {
                         var currentTracking = shipStatusCurrentSaved.getLastDetectedTracking();
                         var tracking = trackings.get(trackings.size() - 1);
 
                         if (!tracking.equals(currentTracking)) {
-                            var text = "Hola,"+name+"tu pedido esta siendo movilizado, llegara pronto, ultima actualizacion: ".concat(tracking.getDate());
-
-                            this.senderMessageService.sendMessage(text, subject, "primapp6@gmail.com");
+                            emailText = "Hola, ".concat(customerName).concat(" tu pedido esta siendo movilizado, llegara pronto, ultima actualización: ").concat(tracking.getDate());
                             shipStatusCurrentSaved.setLastDetectedTracking(tracking);
                             this.shipStatusRepository.save(shipStatusCurrentSaved);
-                        }
+                        } else log.info("NO HAY ACTUALIZACIONES PARA: " + emailSubject);
                     }
+                    ofNullable(emailText).ifPresent(t -> this.senderMessageService.sendMessage(t, emailSubject, customerEmail));
                 });
+        log.info("FIN. ".concat(now().minusHours(5).toString()));
     }
 }
