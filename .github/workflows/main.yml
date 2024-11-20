@@ -16,6 +16,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Update sender mail user
+        run: sed -i 's/<sender_mail_user>/${{ secrets.SENDER_MAIL_USER }}/' src/main/resources/application.yml
+
+      - name: Update sender mail password
+        run: sed -i 's/<sender_mail_password>/${{ secrets.SENDER_MAIL_PASSWORD }}/' src/main/resources/application.yml
+
       - name: Update mongo port
         run: sed -i 's/<port_mongo>/${{ secrets.MONGO_PORT }}/' src/main/resources/application.yml
 
