@@ -1,0 +1,61 @@
+name: Deploy to VPS
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build_and_push:
+    env:
+      image_name: chanchodev/ms-scheduled-status
+      image_version: latest
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update mongo port
+        run: sed -i 's/<port_mongo>/${{ secrets.MONGO_PORT }}/' src/main/resources/application.yml
+
+      - name: Update mongo host
+        run: sed -i 's/<host_mongo>/${{ secrets.VPS_IP }}/' src/main/resources/application.yml
+
+      - name: Update mongo user
+        run: sed -i 's/<user_mongo>/${{ secrets.MONGO_USER }}/' src/main/resources/application.yml
+
+      - name: Update mongo password
+        run: sed -i 's/<password_mongo>/${{ secrets.MONGO_PASSWORD }}/' src/main/resources/application.yml
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+          cache: maven
+
+      - name: Build project and verify test
+        run: mvn clean install
+
+      - name: Push image DOCKER
+        uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: ${{ env.image_name }}
+          tags: ${{ env.image_version }}
+          registry: docker.io
+          dockerfile: Dockerfile
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          script: |
+            cd /home/administrator/applications/ship-shalom/shalom-documentation
+            echo ${{ secrets.VPS_PASSWORD }} | sudo -S docker pull ${{ env.image_name }}:${{ env.image_version }}
+            echo ${{ secrets.VPS_PASSWORD }} | sudo -S docker compose up -d --build
+            echo ${{ secrets.VPS_PASSWORD }} | sudo -S docker system prune -a
