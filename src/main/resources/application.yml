@@ -1,0 +1,21 @@
+server:
+  port: 8001
+
+spring:
+  application:
+    name:
+      ms-scheduled-status
+  data:
+    mongodb:
+      port: <port_mongo>
+      host: <host_mongo>
+      username: <user_mongo>
+      password: <password_mongo>
+      database: shalom-status
+      authentication-database: admin
+
+application:
+  scheduledTimer: 20 30 13,19,21,22,23 * * ?
+
+apis:
+  ship-shalom: http://{VPS_IP}:8000/api/ship-shalom/states
