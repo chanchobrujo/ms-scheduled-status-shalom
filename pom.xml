@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.shalom</groupId>
-	<artifactId>scheduled_status</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>scheduled_status</name>
+	<artifactId>ms-scheduled-status</artifactId>
+	<version>0.1</version>
+	<name>ms-scheduled-status</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
