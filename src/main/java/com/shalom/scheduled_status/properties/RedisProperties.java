@@ -9,10 +9,10 @@ import org.springframework.context.annotation.Configuration;
 @ToString
 @Configuration
 public class RedisProperties {
-    @Value("${spring.redis.uri}")
+    @Value("${spring.redis-listener.uri}")
     private String uri;
-    @Value("${spring.redis.key}")
+    @Value("${spring.redis-listener.key}")
     private String key;
-    @Value("${spring.redis.group}")
+    @Value("${spring.redis-listener.group}")
     private String group;
 }

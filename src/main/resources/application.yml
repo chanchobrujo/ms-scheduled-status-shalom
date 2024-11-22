@@ -4,8 +4,8 @@ server:
 spring:
   application:
     name: ms-scheduled-status
-  redis:
-    uri: <redis_uri>
+  redis-listener:
+    uri: <uri_redis>
     key: notification:shipping
     group: shipping_shalom
   mail:
