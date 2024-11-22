@@ -47,7 +47,7 @@ jobs:
       - name: Push image DOCKER
         uses: mr-smithers-excellent/docker-build-push@v5
         with:
-          image: ${{ env.image_name }}
+          image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.image_name }}
           tags: ${{ env.image_version }}
           registry: docker.io
           dockerfile: Dockerfile
