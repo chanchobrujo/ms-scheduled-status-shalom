@@ -16,6 +16,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Update host of redis
+        run: sed -i 's/<redis_uri>/${{ secrets.REDIS_URI }}/' src/main/resources/application.yml
+
       - name: Update sender mail user
         run: sed -i 's/<sender_mail_user>/${{ secrets.SENDER_MAIL_USER }}/' src/main/resources/application.yml
 

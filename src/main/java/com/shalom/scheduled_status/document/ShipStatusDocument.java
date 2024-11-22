@@ -17,6 +17,7 @@ public class ShipStatusDocument {
     @Id
     private String trackingNumber;
     private String code;
+    private String email;
     private boolean complete = false;
     private TrackingDto lastDetectedTracking;
     private List<TrackingDto> tracking = new ArrayList<>();
