@@ -5,7 +5,7 @@ spring:
   application:
     name: ms-scheduled-status
   redis-listener:
-    uri: <uri_redis>
+    uri: redis://<redis_password>@<host_mongo>:<redis_port>
     key: notification:shipping
     group: shipping_shalom
   mail:
