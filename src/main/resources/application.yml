@@ -2,16 +2,15 @@ server:
   port: 8001
 
 spring:
+  application:
+    name: ms-scheduled-status
   redis:
     value: <redis_uri>
     key: notification:shipping
     group: shipping_shalom
-  application:
-    name:
-      ms-scheduled-status
   mail:
-    host: smtp.gmail.com
     port: 587
+    host: smtp.gmail.com
     username: <sender_mail_user>
     password: <sender_mail_password>
     properties:
