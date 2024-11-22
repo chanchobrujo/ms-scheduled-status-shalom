@@ -61,7 +61,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.VPS_PASSWORD }}
           script: |
-            cd /home/administrator/applications/ship-shalom/shalom-documentation
+            cd /home/administrator/applications/shipping-shalom
             echo ${{ secrets.VPS_PASSWORD }} | sudo -S docker pull ${{ env.image_name }}:${{ env.image_version }}
             echo ${{ secrets.VPS_PASSWORD }} | sudo -S docker compose up -d --build
             echo ${{ secrets.VPS_PASSWORD }} | sudo -S docker system prune -a
