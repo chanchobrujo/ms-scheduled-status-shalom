@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @ToString
 @Configuration
 public class RedisProperties {
-    @Value("${spring.redis.value}")
+    @Value("${spring.redis.uri}")
     private String uri;
     @Value("${spring.redis.key}")
     private String key;
