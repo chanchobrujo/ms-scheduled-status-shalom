@@ -3,7 +3,7 @@ package com.shalom.scheduled_status.task;
 import com.shalom.scheduled_status.model.dto.NotificationDto;
 import com.shalom.scheduled_status.repository.IShipStatusRepository;
 import com.shalom.scheduled_status.rest.IShipShalomRest;
-import com.shalom.scheduled_status.service.sender.notification.ISenderNotificationService;
+import com.shalom.scheduled_status.service.ISenderNotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;

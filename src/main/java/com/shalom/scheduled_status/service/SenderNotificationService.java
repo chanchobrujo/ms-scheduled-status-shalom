@@ -1,4 +1,4 @@
-package com.shalom.scheduled_status.service.sender.notification;
+package com.shalom.scheduled_status.service;
 
 import com.shalom.scheduled_status.model.dto.NotificationDto;
 import com.shalom.scheduled_status.properties.RedisProperties;
