@@ -33,7 +33,6 @@ spring:
       authentication-database: admin
 
 application:
-  listenerNotificationTask: 0 */1 * * * ?
   verifyStatusTask: 0 5 8,14,15,16,17,18 * * ?
 
 apis:
