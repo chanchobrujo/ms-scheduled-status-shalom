@@ -1,6 +1,5 @@
 package com.shalom.scheduled_status.model.response;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.shalom.scheduled_status.model.dto.TrackingDto;
 import lombok.Data;
 
@@ -9,10 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
-
 @Data
-@JsonInclude(NON_EMPTY)
 public class SearchShalomResponse {
     private Boolean completo = false;
 
@@ -30,4 +26,8 @@ public class SearchShalomResponse {
     private Map<String, String> remitente = new HashMap<>();
     private Map<String, String> destinatario = new HashMap<>();
     private List<TrackingDto> tracking = new ArrayList<>();
+
+    public String getCustomerName() {
+        return this.getDestinatario().getOrDefault("nombre", "");
+    }
 }
