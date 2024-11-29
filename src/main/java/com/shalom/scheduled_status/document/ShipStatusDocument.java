@@ -1,5 +1,6 @@
 package com.shalom.scheduled_status.document;
 
+import com.shalom.scheduled_status.model.dto.NotificationDto;
 import com.shalom.scheduled_status.model.dto.TrackingDto;
 import com.shalom.scheduled_status.model.request.ShipShalomRequest;
 import lombok.AllArgsConstructor;
@@ -24,5 +25,10 @@ public class ShipStatusDocument {
 
     public ShipShalomRequest toRequest() {
         return new ShipShalomRequest(this.getCode(), this.getTrackingNumber());
+    }
+
+    public NotificationDto toNotificationDto(String message) {
+        String subject = "PEDIDO ".concat(this.getTrackingNumber());
+        return new NotificationDto(message, this.getEmail(), subject, null);
     }
 }

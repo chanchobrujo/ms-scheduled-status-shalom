@@ -17,7 +17,6 @@ public class SenderNotificationService implements ISenderNotificationService {
     @Override
     public void sendNotification(NotificationDto notification) {
         var message = notification.toBodyMessage();
-        String id = this.lettuceRedisConnection.xadd(this.redisProperties.getKey(), message);
-        log.info("Message {} : {} posted", message, id);
+        this.lettuceRedisConnection.xadd(this.redisProperties.getKey(), message);
     }
 }

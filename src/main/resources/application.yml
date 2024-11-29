@@ -33,7 +33,7 @@ spring:
       authentication-database: admin
 
 application:
-  verifyStatusTask: 0 5 8,14,15,16,17,18 * * ?
+  verifyStatusTask: 0 45 8,14,15,16,17,18 * * ?
 
 apis:
   ship-shalom: http://{VPS_IP}:8000/api/ship-shalom/states
