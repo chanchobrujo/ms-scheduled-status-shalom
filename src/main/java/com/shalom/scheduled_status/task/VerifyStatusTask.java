@@ -24,6 +24,7 @@ public class VerifyStatusTask {
 
     @Scheduled(cron = "${application.verifyStatusTask}", zone = "America/Lima")
     public void verifyStatusTask() {
+        System.out.println(" ");
         log.info("VERIFICAR PEDIDOS PENDIENTES. ".concat(now().toString()));
         this.shipStatusRepository
                 .findByComplete(false)

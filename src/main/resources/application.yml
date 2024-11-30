@@ -8,21 +8,6 @@ spring:
     uri: redis://<redis_password>@<host_mongo>:<redis_port>
     key: notification:shipping
     group: shipping_shalom
-  mail:
-    port: 587
-    host: smtp.gmail.com
-    username: <sender_mail_user>
-    password: <sender_mail_password>
-    properties:
-      mail:
-        smtp:
-          auth: true
-          timeout: 5000
-          writetimeout: 5000
-          connectiontimeout: 5000
-          starttls:
-            enable: true
-            required: true
   data:
     mongodb:
       port: <port_mongo>
@@ -33,7 +18,7 @@ spring:
       authentication-database: admin
 
 application:
-  verifyStatusTask: 0 20 8,13,14,15,16,17,18 * * ?
+  verifyStatusTask: 30 15,30,45,59 8-18 * * ?
 
 apis:
   ship-shalom: http://{VPS_IP}:8000/api/ship-shalom/states
