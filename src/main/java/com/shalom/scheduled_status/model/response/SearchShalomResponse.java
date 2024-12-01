@@ -27,7 +27,11 @@ public class SearchShalomResponse {
     private Map<String, String> destinatario = new HashMap<>();
     private List<TrackingDto> tracking = new ArrayList<>();
 
-    public String getCustomerName() {
+    public String getRemitenteName() {
+        return this.getDestinatario().getOrDefault("nombre", "");
+    }
+
+    public String getDestinatarioName() {
         return this.getDestinatario().getOrDefault("nombre", "");
     }
 }
