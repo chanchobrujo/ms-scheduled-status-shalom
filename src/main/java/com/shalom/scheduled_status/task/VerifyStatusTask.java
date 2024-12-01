@@ -2,6 +2,7 @@ package com.shalom.scheduled_status.task;
 
 import com.shalom.scheduled_status.document.ShipStatusDocument;
 import com.shalom.scheduled_status.model.exception.BusinessException;
+import com.shalom.scheduled_status.model.response.SearchShalomResponse;
 import com.shalom.scheduled_status.repository.IShipStatusRepository;
 import com.shalom.scheduled_status.rest.IShipShalomRest;
 import com.shalom.scheduled_status.service.ISenderNotificationService;
@@ -10,8 +11,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.time.ZoneId;
+import java.util.Locale;
+
 import static io.micrometer.common.util.StringUtils.isNotEmpty;
 import static java.time.LocalDateTime.now;
+import static java.time.LocalDateTime.parse;
+import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Optional.ofNullable;
 
 @Slf4j
@@ -38,13 +44,15 @@ public class VerifyStatusTask {
     }
 
     private String builderMessage(ShipStatusDocument document) {
-        String emailText = null;
+        String message = null;
         try {
-            var shipStatusResponse = this.shipShalomRest.getPackage(document.toRequest());
-
+            SearchShalomResponse shipStatusResponse = this.shipShalomRest.getPackage(document.toRequest());
+            var messageFirstPart = "Hola, "
+                    .concat(shipStatusResponse.getDestinatarioName())
+                    .concat(", la encomienda que te envia, ")
+                    .concat(shipStatusResponse.getRemitenteName());
             if (shipStatusResponse.getCompleto()) {
-                emailText = "Hola, ".concat(shipStatusResponse.getCustomerName())
-                        .concat(" tu pedido ya se encuentra en el local de entrega.");
+                message = messageFirstPart.concat(", ya se encuentra en el local de entrega.");
                 document.setComplete(true);
                 this.shipStatusRepository.save(document);
             }
@@ -55,9 +63,20 @@ public class VerifyStatusTask {
                 var tracking = trackings.get(trackings.size() - 1);
 
                 if (!tracking.equals(currentTracking)) {
-                    emailText = "Hola, ".concat(shipStatusResponse.getCustomerName())
-                            .concat(" tu pedido esta siendo movilizado, llegara pronto, ultima actualización: ")
-                            .concat(tracking.getDate());
+                    String dateFormated = parse(tracking.getDate())
+                            .atZone(ZoneId.of("America/Lima"))
+                            .format(ofPattern("EEEE, dd MMMM, yyyy ', a las' HH 'con' MM 'minutos'", new Locale("es", "ES")));
+
+                    if (isNotEmpty(tracking.getTruck())) {
+                        message = messageFirstPart
+                                .concat(", esta siendo movilizada en este momento... legara pronto, ")
+                                .concat("el ultimo movimiento del camion que lelva tu pedido, fue el ")
+                                .concat(dateFormated);
+                    } else {
+                        message = messageFirstPart
+                                .concat(", ya se encuentra en el local de entrega, la hora de llegada fue el ")
+                                .concat(dateFormated);
+                    }
                     document.setLastDetectedTracking(tracking);
                     this.shipStatusRepository.save(document);
                 }
@@ -67,6 +86,6 @@ public class VerifyStatusTask {
             log.error(" ".concat(e.getMessage()));
             log.error(" ".concat(e.getLocalizedMessage()));
         }
-        return emailText;
+        return message;
     }
 }
